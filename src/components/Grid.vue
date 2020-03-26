@@ -9,9 +9,12 @@
           v-for="(cell, j) in row"
           :key="j"
           class="cell"
-          @click="updateCell(i, j, 'selected')"
+          :class="{'is-dark': cell === 'selected'}"
+          @mousedown="isEditing = true; updateCell(i, j, 'selected')"
+          @mouseup="isEditing = false"
+          @mouseenter="isEditing && updateCell(i, j, 'selected')"
+          @contextmenu.prevent="updateCell(i, j, 'flagged')"
         >
-        {{ cell }}
         </td>
       </tr>
     </table>
@@ -37,14 +40,13 @@ export default class Grid extends Vue {
 
   private state: string[][] = [];
 
+  private isEditing = false;
+
   public created() {
     this.state = Array(this.height).fill('').map(() => Array(this.width).fill('').map(() => ''));
   }
 
   public updateCell(row: number, column: number, value: string) {
-    console.log(row);
-    console.log(column);
-    console.log(value);
     const newRow = this.state[row];
     newRow[column] = value;
     this.state.splice(row, 1, newRow);
@@ -61,5 +63,6 @@ export default class Grid extends Vue {
   & .selected {
     background-color: black;
   }
+  padding: 0;
 }
 </style>
