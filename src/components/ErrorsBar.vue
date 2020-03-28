@@ -1,12 +1,16 @@
 <template>
-<div class="error-bar">
-  <span v-for="error in maxErrorCount" class="icon" :key="error">
-    <i
-      class="fa-heart is-error"
-      :class="error <= currentErrorCount ? 'far' : 'fas'"
-    />
-  </span>
-</div>
+  <div class="error-bar">
+    <span
+      v-for="error in maxErrorCount"
+      :key="error"
+      class="icon"
+    >
+      <i
+        class="fa-heart is-error"
+        :class="error <= currentErrorCount ? 'far' : 'fas'"
+      />
+    </span>
+  </div>
 </template>
 
 <script lang="ts">

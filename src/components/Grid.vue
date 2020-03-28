@@ -1,41 +1,53 @@
 <template>
-<div>
-  <table
-    @mousedown.left="isEditing = true"
-    @mouseup.left="isEditing = false"
-    @mouseleave="isEditing = false"
-    @contextmenu.prevent=""
-  >
-    <tbody>
-      <tr>
-        <td />
-        <td class="column-hint" v-for="j in width" :key="j">
-          <div v-for="(hint, k) in columnHints[j-1]" :key="k" class="hint">
-            {{ hint }}
-          </div>
-        </td>
-      </tr>
-      <tr
-        v-for="(row, i) in state"
-        :key="i"
-      >
-        <td class="line-hint">
-          <span v-for="(hint, k) in rowHints[i]" :key="k" class="hint">
-            {{ hint }}
-          </span>
-        </td>
-        <cell
-          v-for="(cell, j) in row"
-          :key="j"
-          :value="cell"
-          @mousedown.native.left.prevent="onLeftClick(i, j)"
-          @mouseover.native.left="onNewCellEnter(i, j)"
-          @mouseup.native.right="onRightClick(i, j)"
-        />
-      </tr>
-    </tbody>
-  </table>
-</div>
+  <div>
+    <table
+      @mousedown.left="isEditing = true"
+      @mouseup.left="isEditing = false"
+      @mouseleave="isEditing = false"
+      @contextmenu.prevent=""
+    >
+      <tbody>
+        <tr>
+          <td />
+          <td
+            v-for="j in width"
+            :key="j"
+            class="column-hint"
+          >
+            <div
+              v-for="(hint, k) in columnHints[j-1]"
+              :key="k"
+              class="hint"
+            >
+              {{ hint }}
+            </div>
+          </td>
+        </tr>
+        <tr
+          v-for="(row, i) in state"
+          :key="i"
+        >
+          <td class="line-hint">
+            <span
+              v-for="(hint, k) in rowHints[i]"
+              :key="k"
+              class="hint"
+            >
+              {{ hint }}
+            </span>
+          </td>
+          <cell
+            v-for="(cell, j) in row"
+            :key="j"
+            :value="cell"
+            @mousedown.native.left.prevent="onLeftClick(i, j)"
+            @mouseover.native.left="onNewCellEnter(i, j)"
+            @mouseup.native.right="onRightClick(i, j)"
+          />
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script lang="ts">

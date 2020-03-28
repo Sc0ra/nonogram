@@ -1,8 +1,8 @@
 <template>
-<td
-  class="cell"
-  :class="style(value)"
-/>
+  <td
+    class="cell"
+    :class="style(value)"
+  />
 </template>
 
 <script lang="ts">
