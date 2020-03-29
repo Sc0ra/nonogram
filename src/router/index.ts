@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/level/:levelIdText',
+    path: '/level/:levelId',
     name: 'Level',
     component: Level,
     props: true,

@@ -57,12 +57,7 @@ import {
 
 import Cell from '@/components/Cell.vue';
 
-enum CellValue {
-    Empty = 0,
-    Filled,
-    Flagged,
-    Error,
-}
+import { CellValue } from '@/store/types';
 
 @Component({
   components: {
@@ -137,8 +132,8 @@ export default class Grid extends Vue {
   }
 
   public selectCell(row: number, column: number) {
-    if (this.model[row][column] === CellValue.Filled) {
-      this.updateCell(row, column, CellValue.Filled);
+    if (this.model[row][column] === CellValue.Fill) {
+      this.updateCell(row, column, CellValue.Fill);
     } else if (this.state[row][column] === CellValue.Empty) {
       this.updateCell(row, column, CellValue.Error);
       this.$emit('error');
@@ -149,7 +144,7 @@ export default class Grid extends Vue {
   public onRightClick(row: number, column: number) {
     const cell = this.state[row][column];
     if (cell === CellValue.Empty) {
-      this.updateCell(row, column, CellValue.Flagged);
+      this.updateCell(row, column, CellValue.Flag);
     } else {
       this.updateCell(row, column, CellValue.Empty);
     }
@@ -169,7 +164,7 @@ export default class Grid extends Vue {
   // Success
 
   private successCell(row: number, column: number, cell: CellValue) {
-    return this.model[row][column] !== CellValue.Filled || cell === this.model[row][column];
+    return this.model[row][column] !== CellValue.Fill || cell === this.model[row][column];
   }
 
   get success() {

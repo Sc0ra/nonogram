@@ -1,41 +1,39 @@
 <template>
-  <div class="level">
-    <h1>Nonogram</h1>
+  <div v-if="level">
+    <h1 class="title is-1">
+      Nonogram
+    </h1>
     <div class="wrapper">
       <h2 v-if="success">
         Congratulations !!
       </h2>
-      <template v-else>
-        <errors-bar
-          :max-error-count="maxErrorCount"
-          :current-error-count="currentErrorCount"
-        />
-        <grid
-          :model="model"
-          @error="currentErrorCount++"
-          @success="success = true"
-        />
-      </template>
+      <health-bar
+        v-else
+        :max-health="level.maxHealth"
+        :current-health="currentHealth"
+      />
+      <grid
+        :model="level.model"
+        @error="currentHealth++"
+        @success="success = true"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
-import Grid from '@/components/Grid.vue';
-import ErrorsBar from '@/components/ErrorsBar.vue';
+import { Getter } from 'vuex-class';
 
-enum CellValue {
-    Empty = 0,
-    Filled,
-    Flagged,
-    Error,
-}
+import Grid from '@/components/Grid.vue';
+import HealthBar from '@/components/HealthBar.vue';
+
+import { Level } from '@/store/types';
 
 @Component({
   components: {
     Grid,
-    ErrorsBar,
+    HealthBar,
   },
 })
 export default class App extends Vue {
@@ -43,20 +41,16 @@ export default class App extends Vue {
     required: true,
     type: String,
   })
-  levelIdText!: string;
+  levelId!: string;
 
-  get levelId() {
-    return +this.levelIdText;
+  @Getter('getLevel', { namespace: 'levels' })
+  public getLevel!: (levelId: string) => Level;
+
+  get level() {
+    return this.getLevel(this.levelId);
   }
 
-  public model: CellValue[][] = [
-    [0, 1, 1, 0],
-    [1, 1, 1, 1],
-    [1, 0, 1, 1],
-    [0, 1, 1, 0],
-  ];
-
-  public currentErrorCount = 0;
+  public currentHealth = 0;
 
   public maxErrorCount = 3;
 

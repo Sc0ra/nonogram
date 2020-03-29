@@ -8,12 +8,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-enum CellValue {
-    Empty = 0,
-    Filled,
-    Flagged,
-    Error,
-}
+import { CellValue } from '@/store/types';
 
 @Component
 export default class Grid extends Vue {
@@ -24,8 +19,8 @@ export default class Grid extends Vue {
   value!: CellValue;
 
   public style = (cell: CellValue) => ({
-    'is-selected': cell === CellValue.Filled,
-    'is-flagged': cell === CellValue.Flagged,
+    'is-fill': cell === CellValue.Fill,
+    'is-flag': cell === CellValue.Flag,
     'is-error': cell === CellValue.Error,
   });
 }
@@ -37,10 +32,10 @@ export default class Grid extends Vue {
   width: 1.5rem;
   padding: 0;
   border: solid #def2f1 2px;
-  &.is-selected {
+  &.is-fill {
     background-color: #17252a;
   }
-  &.is-flagged {
+  &.is-flag {
     background-color: #2b7a78;
   }
   &.is-error {
