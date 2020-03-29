@@ -1,13 +1,13 @@
 <template>
-  <div class="error-bar">
+  <div class="health-bar">
     <span
-      v-for="error in maxErrorCount"
+      v-for="error in maxHealth"
       :key="error"
-      class="icon"
+      class="icon is-large"
     >
       <i
-        class="fa-heart is-error"
-        :class="error <= currentErrorCount ? 'far' : 'fas'"
+        class="fa-heart is-error fa-2x"
+        :class="error <= currentHealth ? 'far' : 'fas'"
       />
     </span>
   </div>
@@ -17,29 +17,25 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
-export default class ErrorsBar extends Vue {
+export default class HealthBar extends Vue {
   @Prop({
     required: true,
     type: Number,
   })
-  maxErrorCount!: number;
+  maxHealth!: number;
 
   @Prop({
     required: true,
     type: Number,
   })
-  currentErrorCount!: number;
+  currentHealth!: number;
 }
 </script>
 
 <style scoped lang="scss">
-.error-bar {
+.health-bar {
   display: inline-block;
   direction: rtl;
-}
-.icon {
-  padding: .2rem;
-  font-size: 1.5rem;
 }
 .is-error {
   color: #db6c84;
