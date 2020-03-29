@@ -12,6 +12,7 @@ export default class App extends Vue {}
 </script>
 
 <style lang="scss">
+@import 'bulma';
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap');
 html {
   background-color: #82d1cd;
