@@ -1,9 +1,9 @@
 <template>
   <div>
     <table
-      @mousedown.left="isEditing = true"
+      class="board"
       @mouseup.left="isEditing = false"
-      @mouseleave="isEditing = false"
+      @mouseleave="isEditing = false; hoveredCell = {x: undefined, y: undefined};"
       @contextmenu.prevent=""
     >
       <tbody>
@@ -11,13 +11,14 @@
           <td />
           <td
             v-for="j in width"
-            :key="j"
+            :key="j-1"
             class="column-hint"
           >
             <div
               v-for="(hint, k) in columnHints[j-1]"
               :key="k"
               class="hint"
+              :class="{'success-hint': successColumn(j-1)}"
             >
               {{ hint }}
             </div>
@@ -32,6 +33,7 @@
               v-for="(hint, k) in rowHints[i]"
               :key="k"
               class="hint"
+              :class="{'success-hint': successLine(i)}"
             >
               {{ hint }}
             </span>
@@ -40,6 +42,9 @@
             v-for="(cell, j) in row"
             :key="j"
             :value="cell"
+            :highlighted="i === hoveredCell.x || j === hoveredCell.y"
+            :fat-borders="fatBorders(i,j)"
+            @mouseenter.native="onEnter(i, j)"
             @mousedown.native.left.prevent="onLeftClick(i, j)"
             @mouseover.native.left="onNewCellEnter(i, j)"
             @mouseup.native.right="onRightClick(i, j)"
@@ -80,6 +85,8 @@ export default class Grid extends Vue {
   get width() {
     return this.model && this.model[0].length;
   }
+
+  public hoveredCell: {x?: number; y?: number} = {};
 
   // Hints generation
 
@@ -167,23 +174,54 @@ export default class Grid extends Vue {
     return this.model[row][column] !== CellValue.Fill || cell === this.model[row][column];
   }
 
+  public successColumn(column: number) {
+    return this.state
+      .every((row, i) => this.successCell(i, column, row[column]));
+  }
+
+  public successLine(row: number) {
+    return this.state[row]
+      .every((cell, j) => this.successCell(row, j, cell));
+  }
+
   get success() {
     return this.state
-      .every((row, i) => row
-        .every((cell, j) => this.successCell(i, j, cell)));
+      .every((row, i) => this.successLine(i));
   }
 
   @Watch('success')
   public onSuccess(value: boolean) {
     if (value) {
+      this.isEditing = false;
       this.$emit('success');
     }
+  }
+
+  // Additional styling
+
+  public onEnter(row: number, column: number) {
+    this.hoveredCell = { x: row, y: column };
+  }
+
+  public fatBorders = (row: number, column: number) => {
+    const borders: string[] = [];
+    if (row % 5 === 0) {
+      borders.push('top');
+    } else if (row % 5 === 4) {
+      borders.push('bottom');
+    }
+    if (column % 5 === 0) {
+      borders.push('left');
+    } else if (column % 5 === 4) {
+      borders.push('right');
+    }
+    return borders;
   }
 }
 </script>
 
 <style scoped lang="scss">
-table {
+.board {
   border-collapse: collapse;
   margin-right: 14rem;
 }
@@ -203,5 +241,9 @@ table {
 .hint {
   text-align: center;
   font-weight: 600;
+
+  &.success-hint {
+    color: #76bdb9;
+  }
 }
 </style>

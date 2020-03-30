@@ -1,7 +1,7 @@
 <template>
   <td
     class="cell"
-    :class="style(value)"
+    :class="style"
   />
 </template>
 
@@ -18,11 +18,30 @@ export default class Grid extends Vue {
   })
   value!: CellValue;
 
-  public style = (cell: CellValue) => ({
-    'is-fill': cell === CellValue.Fill,
-    'is-flag': cell === CellValue.Flag,
-    'is-error': cell === CellValue.Error,
-  });
+  @Prop({
+    required: true,
+    type: Boolean,
+  })
+  highlighted!: boolean;
+
+  @Prop({
+    required: true,
+    type: Array,
+  })
+  fatBorders!: string[];
+
+  get style() {
+    return {
+      'is-fill': this.value === CellValue.Fill,
+      'is-flag': this.value === CellValue.Flag,
+      'is-error': this.value === CellValue.Error,
+      'is-highlight': this.highlighted,
+      left: this.fatBorders.includes('left'),
+      right: this.fatBorders.includes('right'),
+      top: this.fatBorders.includes('top'),
+      bottom: this.fatBorders.includes('bottom'),
+    };
+  }
 }
 </script>
 
@@ -32,6 +51,9 @@ export default class Grid extends Vue {
   width: 1.5rem;
   padding: 0;
   border: solid #def2f1 2px;
+  &.is-highlight {
+    background-color: #9fd8d5;
+  }
   &.is-fill {
     background-color: #17252a;
   }
@@ -41,5 +63,17 @@ export default class Grid extends Vue {
   &.is-error {
     background-color: #db6c84;
   }
-}
+  &.left {
+    border-left: solid #def2f1 4px;
+  }
+  &.right {
+    border-right: solid #def2f1 4px;
+  }
+  &.top {
+    border-top: solid #def2f1 4px;
+  }
+  &.bottom {
+    border-bottom: solid #def2f1 4px;
+  }
+ }
 </style>
