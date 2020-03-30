@@ -1,0 +1,16 @@
+.tree-left {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 90vh;
+  transform: scaleX(-1);
+  z-index: -1;
+}
+
+.tree-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 90vh;
+  z-index: -1;
+}
