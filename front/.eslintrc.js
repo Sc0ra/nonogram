@@ -18,12 +18,12 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'no-debugger': 'off',
-    'linebreak-style': 0
+    'linebreak-style': 0,
   },
 
-  'extends': [
+  extends: [
     'plugin:vue/recommended',
     '@vue/airbnb',
-    '@vue/typescript/recommended'
-  ]
+    '@vue/typescript/recommended',
+  ],
 };

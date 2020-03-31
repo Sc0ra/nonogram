@@ -6,9 +6,19 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
+
+import { LevelMap } from './store/types';
 
 @Component
-export default class App extends Vue {}
+export default class App extends Vue {
+@Action('getLevels', { namespace: 'levels' })
+public getLevels!: () => LevelMap;
+
+public created() {
+  this.getLevels();
+}
+}
 </script>
 
 <style lang="scss">

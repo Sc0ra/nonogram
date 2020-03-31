@@ -1,7 +1,7 @@
-import { ModelsState } from './levels/types';
+import { LevelState } from './levels/types';
 
 export interface RootState {
-  models: ModelsState;
+  levels: LevelState;
 }
 
 export * from './levels/types';

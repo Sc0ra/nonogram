@@ -1,11 +1,11 @@
 
 import { GetterTree } from 'vuex';
-import { ModelsState } from './types';
+import { LevelState } from './types';
 import { RootState, Level } from '../types';
 
-const getters: GetterTree<ModelsState, RootState> = {
+const getters: GetterTree<LevelState, RootState> = {
   getLevel(state) {
-    return (levelId: string): Level => state[levelId];
+    return (levelId: string): Level => state.levels[levelId];
   },
 };
 export default getters;

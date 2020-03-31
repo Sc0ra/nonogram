@@ -1,5 +1,9 @@
 import { MutationTree } from 'vuex';
-import { ModelsState } from './types';
+import { LevelState, LevelMap } from './types';
 
-const mutations: MutationTree<ModelsState> = {};
+const mutations: MutationTree<LevelState> = {
+  setLevels(state, levels: LevelMap) {
+    state.levels = levels;
+  },
+};
 export default mutations;
