@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Level from '../views/Level.vue';
+import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
 
@@ -10,6 +11,11 @@ const routes = [
     name: 'Level',
     component: Level,
     props: true,
+  },
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
   },
 ];
 
