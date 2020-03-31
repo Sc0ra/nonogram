@@ -1,23 +1,18 @@
+plugins:
+    - serverless-offline
+    - serverless-plugin-typescript-express
+
 service: nonogram-api
 
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: ${opt:stage, 'dev'}
+  stage: dev
   region: eu-west-3
-
-package:
-  exclude:
-    - "**/*.ts"
-    - "test/**"
-    - "scripts/**"
-    - ".vscode/**"
-    - "*"
 
 functions:
   http:
-    handler: src/lambda.http
-    timeout: 2
+    handler: src/server.handler
     events:
       - http: ANY /
       - http: ANY /{proxy+}

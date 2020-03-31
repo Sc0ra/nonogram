@@ -1,28 +1,18 @@
 {
-  "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
-    "lib": [
-      "dom",
-      "es5",
-      "es6",
-      "esnext.asynciterable"
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "sourceMap": true,
+        "isolatedModules": false,
+        "types": ["express"],
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "include": [
+        "src/**/*"
     ],
-    "pretty": true,
-    "inlineSourceMap": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
-  "exclude": [
-    "node_modules",
-    "test",
-    "scripts"
-  ]
+    "exclude": [
+        "node_modules"
+    ]
 }

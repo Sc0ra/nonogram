@@ -1,38 +1,40 @@
-# Serverless Express Typescript Starter Kit
+# NodeJS Typescript Serverless Example
 
-A starter kit for building express apps using typescript deployed to AWS Lambda via serverless.
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-## Getting Started
+Project developed on medium article:
+[Create Serverless Application with Express and Typescript — Part 1]
 
-1. Clone the repo to your local machine.
-2. Make sure you've got the required global tools by running:
-    - `npm install -g yarn ts-node`
-3. Restore packages by running `yarn`
-4. Check everything works locally by running `yarn test`
-5. Deploy to AWS by running `yarn deploy`
-    - Hint set your `AWS_PROFILE` environment variable if not using the default
-      - On fish: `set -x AWS_PROFILE profile`
-      - On bash: `export AWS_PROFILE=profile`
+### Stack
 
-Other commands:
-- Check the serverless packaging works locally: `yarn package`
-- Clean generated files left over from build: `yarn clean`
+* [NodeJS] - JavaScript runtime built on Chrome's V8 JavaScript engine.
+* [ExpressJS] - Framework most commonly used to build APIs with NodeJS
+* [Typescript] - Provides us with a type structure for Javascript
+* [Serverless Framework] - Toolkit for building serverless applications .
 
-## Writing Tests
+### Installation and Use
 
-Jest has been configured to run any file ending in `*.test.ts`, `*.test.tsx` or `*.test.js`. You can put these in the `test` folder, but they can also live alongside your code in the `src` folder if you prefer.
+To install dependencies of project.
+```
+$ cd node-typescript-serverless
+$ npm install
+```
+To generate files JS.
+```
+$ npm run build
+```
 
-## Infrastructure
+Run project.
+```
+$ npm run start
+```
 
-Defaults:
-- Doesn't use VPC
-- Deployed to eu-west-1 (Ireland)
-- Lambda timeout: 2 seconds
+License
+----
+MIT
 
-In the serverless.yml file uncomment from line 24 onwards to enable the hyper-paranoid security locked down setup. This uses private subnets in three availability zones, and does not include an internet gateway - which means the lambdas can't access the internet, and the only way they can be invoked is via API gateway.
-
-Key Features when uncommented:
-- No outbound connectivity at all.
-- 3 private subnets.
-- /24 block gives 250 addresses in each subnet
-- 750 addresses available in total (limits lambda instances).
+   [Create Serverless Application with Express and Typescript — Part 1]: https://medium.com/@eliasjcjunior/create-serverless-application-with-express-and-typescript-a4c0c25060b2
+   [ExpressJS]: https://expressjs.com/
+   [Typescript]: https://www.typescriptlang.org/index.html#download-links
+   [NodeJS]: https://nodejs.org/en/download/
+   [Serverless Framework]: https://serverless.com/

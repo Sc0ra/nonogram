@@ -158,10 +158,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/nonogram-api/dev/1585677547003-2020-03-31T17:59:07.003Z/nonogram-api.zip"
+                "S3Key": "serverless/nonogram-api/dev/1585680319690-2020-03-31T18:45:19.690Z/nonogram-api.zip"
               },
               "FunctionName": "nonogram-api-dev-http",
-              "Handler": "src/lambda.http",
+              "Handler": "dist/server.handler",
               "MemorySize": 1024,
               "Role": {
                 "Fn::GetAtt": [
@@ -170,21 +170,21 @@
                 ]
               },
               "Runtime": "nodejs12.x",
-              "Timeout": 2
+              "Timeout": 6
             },
             "DependsOn": [
               "HttpLogGroup",
               "IamRoleLambdaExecution"
             ]
           },
-          "HttpLambdaVersion1rVWRBRxTe3SXEAMKgXPGcYz4Mttm3pRhIA6ogvsnA": {
+          "HttpLambdaVersionVIWfmf0sLLNCQF6bqXLR3J0HI8amhJdFoTfBD4Uc60": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HttpLambdaFunction"
               },
-              "CodeSha256": "xvOdQjDQGjzkHNrHmrvho2D7DLJZqFSgQnYi1acw0uA="
+              "CodeSha256": "ZFmzAfs2MTFIMfopG3H3fcP8dfsNhUrvYD+VmJbGSEs="
             }
           },
           "ApiGatewayRestApi": {
@@ -303,7 +303,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1585677528345": {
+          "ApiGatewayDeployment1585680304559": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -363,7 +363,7 @@
           "HttpLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HttpLambdaVersion1rVWRBRxTe3SXEAMKgXPGcYz4Mttm3pRhIA6ogvsnA"
+              "Ref": "HttpLambdaVersionVIWfmf0sLLNCQF6bqXLR3J0HI8amhJdFoTfBD4Uc60"
             }
           },
           "ServiceEndpoint": {
@@ -460,11 +460,14 @@
       },
       "vpc": {}
     },
+    "plugins": [
+      "serverless-offline",
+      "serverless-plugin-typescript-express"
+    ],
     "pluginsData": {},
     "functions": {
       "http": {
-        "handler": "src/lambda.http",
-        "timeout": 2,
+        "handler": "dist/server.handler",
         "events": [
           {
             "http": "ANY /"
@@ -476,18 +479,19 @@
         "name": "nonogram-api-dev-http",
         "package": {},
         "memory": 1024,
+        "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HttpLambdaVersion1rVWRBRxTe3SXEAMKgXPGcYz4Mttm3pRhIA6ogvsnA"
+        "versionLogicalId": "HttpLambdaVersionVIWfmf0sLLNCQF6bqXLR3J0HI8amhJdFoTfBD4Uc60"
       }
     },
     "serviceFilename": "serverless.yml",
     "layers": {},
     "isDashboardMonitoringPreconfigured": false,
-    "artifact": "D:\\work\\nonogram\\back2\\.serverless\\nonogram-api.zip"
+    "artifact": "D:\\work\\nonogram\\node-typescript-serverless-development\\.serverless\\nonogram-api.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/nonogram-api/dev/1585677547003-2020-03-31T17:59:07.003Z",
+    "artifactDirectoryName": "serverless/nonogram-api/dev/1585680319690-2020-03-31T18:45:19.690Z",
     "artifact": "nonogram-api.zip"
   }
 }

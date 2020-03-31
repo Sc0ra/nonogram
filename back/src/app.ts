@@ -1,23 +1,22 @@
-import * as express from 'express';
-import { json, urlencoded } from 'body-parser';
-//import * as compression from 'compression';
-import * as cors from 'cors';
-import { eventContext } from 'aws-serverless-express/middleware';
-import { join } from 'path';
+import * as Express from "express";
+import * as bodyParser from "body-parser";
 
-export function configureApp() {
-  const app = express();
-  app.set('view engine', 'pug');
-  app.set('views', join(__dirname, '/views'));
-  //app.use(compression());
-  app.use(cors());
-  app.use(json());
-  app.use(urlencoded({ extended: true }));
-  app.use(eventContext());
+import routes from "./routes";
 
-  app.get('/', (req, res) => {
-    res.render('home');
-  });
+class App {
 
-  return app;
+    public app: Express.Application;
+
+    constructor() {
+        this.app = Express();
+        this.config();
+    }
+
+    private config() {
+        this.app.use(bodyParser.json());
+        this.app.use(routes)
+    }
 }
+
+export default new App().app;
+
