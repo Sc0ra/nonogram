@@ -70,10 +70,10 @@
               }
             }
           },
-          "AppLogGroup": {
+          "HttpLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/nonogram-api-dev-app"
+              "LogGroupName": "/aws/lambda/nonogram-api-dev-http"
             }
           },
           "IamRoleLambdaExecution": {
@@ -151,17 +151,17 @@
               }
             }
           },
-          "AppLambdaFunction": {
+          "HttpLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/nonogram-api/dev/1585671828031-2020-03-31T16:23:48.031Z/nonogram-api.zip"
+                "S3Key": "serverless/nonogram-api/dev/1585677547003-2020-03-31T17:59:07.003Z/nonogram-api.zip"
               },
-              "FunctionName": "nonogram-api-dev-app",
-              "Handler": "index.handler",
+              "FunctionName": "nonogram-api-dev-http",
+              "Handler": "src/lambda.http",
               "MemorySize": 1024,
               "Role": {
                 "Fn::GetAtt": [
@@ -170,21 +170,21 @@
                 ]
               },
               "Runtime": "nodejs12.x",
-              "Timeout": 6
+              "Timeout": 2
             },
             "DependsOn": [
-              "AppLogGroup",
+              "HttpLogGroup",
               "IamRoleLambdaExecution"
             ]
           },
-          "AppLambdaVersiona1q7zzh5lumtSojIlfiKroC24sSX42PdxZjk3O6I": {
+          "HttpLambdaVersion1rVWRBRxTe3SXEAMKgXPGcYz4Mttm3pRhIA6ogvsnA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "AppLambdaFunction"
+                "Ref": "HttpLambdaFunction"
               },
-              "CodeSha256": "heITOzdnjmjpxZcA77E5Aid1RUSFXg8dDQUlg7aBuYs="
+              "CodeSha256": "xvOdQjDQGjzkHNrHmrvho2D7DLJZqFSgQnYi1acw0uA="
             }
           },
           "ApiGatewayRestApi": {
@@ -248,7 +248,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "AppLambdaFunction",
+                          "HttpLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -291,7 +291,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "AppLambdaFunction",
+                          "HttpLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -303,7 +303,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1585671825284": {
+          "ApiGatewayDeployment1585677528345": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -316,12 +316,12 @@
               "ApiGatewayMethodProxyVarAny"
             ]
           },
-          "AppLambdaPermissionApiGateway": {
+          "HttpLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "AppLambdaFunction",
+                  "HttpLambdaFunction",
                   "Arn"
                 ]
               },
@@ -360,10 +360,10 @@
               "Ref": "ServerlessDeploymentBucket"
             }
           },
-          "AppLambdaFunctionQualifiedArn": {
+          "HttpLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AppLambdaVersiona1q7zzh5lumtSojIlfiKroC24sSX42PdxZjk3O6I"
+              "Ref": "HttpLambdaVersion1rVWRBRxTe3SXEAMKgXPGcYz4Mttm3pRhIA6ogvsnA"
             }
           },
           "ServiceEndpoint": {
@@ -462,32 +462,32 @@
     },
     "pluginsData": {},
     "functions": {
-      "app": {
-        "handler": "index.handler",
+      "http": {
+        "handler": "src/lambda.http",
+        "timeout": 2,
         "events": [
           {
             "http": "ANY /"
           },
           {
-            "http": "ANY {proxy+}"
+            "http": "ANY /{proxy+}"
           }
         ],
-        "name": "nonogram-api-dev-app",
+        "name": "nonogram-api-dev-http",
         "package": {},
         "memory": 1024,
-        "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "AppLambdaVersiona1q7zzh5lumtSojIlfiKroC24sSX42PdxZjk3O6I"
+        "versionLogicalId": "HttpLambdaVersion1rVWRBRxTe3SXEAMKgXPGcYz4Mttm3pRhIA6ogvsnA"
       }
     },
     "serviceFilename": "serverless.yml",
     "layers": {},
     "isDashboardMonitoringPreconfigured": false,
-    "artifact": "D:\\work\\nonogram\\back\\.serverless\\nonogram-api.zip"
+    "artifact": "D:\\work\\nonogram\\back2\\.serverless\\nonogram-api.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/nonogram-api/dev/1585671828031-2020-03-31T16:23:48.031Z",
+    "artifactDirectoryName": "serverless/nonogram-api/dev/1585677547003-2020-03-31T17:59:07.003Z",
     "artifact": "nonogram-api.zip"
   }
 }

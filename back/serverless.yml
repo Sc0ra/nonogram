@@ -1,16 +1,23 @@
-# serverless.yml
-
 service: nonogram-api
 
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   region: eu-west-3
 
+package:
+  exclude:
+    - "**/*.ts"
+    - "test/**"
+    - "scripts/**"
+    - ".vscode/**"
+    - "*"
+
 functions:
-  app:
-    handler: index.handler
+  http:
+    handler: src/lambda.http
+    timeout: 2
     events:
       - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http: ANY /{proxy+}
