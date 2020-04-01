@@ -7,8 +7,9 @@ export enum CellValue {
 
 export interface Level {
   model: CellValue[][];
-  maxHealth: number;
-  id: string;
+  max_health: number;
+  level_id: string;
+  name: string;
 }
 
 export interface LevelMap {

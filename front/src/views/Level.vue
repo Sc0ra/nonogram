@@ -9,7 +9,7 @@
       </h2>
       <health-bar
         v-else
-        :max-health="level.maxHealth"
+        :max-health="level.max_health"
         :current-health="currentHealth"
       />
       <grid
@@ -28,7 +28,7 @@ import { Getter } from 'vuex-class';
 import Grid from '@/components/Grid.vue';
 import HealthBar from '@/components/HealthBar.vue';
 
-import { Level } from '@/store/types';
+import { Level } from '../store/levels/types';
 
 @Component({
   components: {
@@ -51,8 +51,6 @@ export default class App extends Vue {
   }
 
   public currentHealth = 0;
-
-  public maxErrorCount = 3;
 
   public success = false;
 }

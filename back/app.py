@@ -7,6 +7,8 @@ from flask_login import LoginManager, current_user
 from flask_pymongo import PyMongo
 
 from routes.users import users
+from routes.levels import levels
+
 from users.manager import UserManager
 from core.exceptions import ApiException
 
@@ -51,6 +53,7 @@ def create_app(testing=False):
         return response, 500
 
     app.register_blueprint(users)
+    app.register_blueprint(levels)
 
     @app.route("/config")
     def config():
@@ -61,33 +64,6 @@ def create_app(testing=False):
         }
         if current_user.is_authenticated:
             res.update({"currentUser": current_user.to_dict()})
-        return jsonify(res)
-
-    @app.route("/levels")
-    def levels():
-        res = [
-            {
-                "id": "1",
-                "model": [[0, 1, 1, 0], [1, 1, 1, 1], [1, 0, 1, 1], [0, 1, 1, 0],],
-                "maxHealth": 3,
-            },
-            {
-                "id": "2",
-                "model": [
-                    [0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-                    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                    [0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-                    [0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-                    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                    [0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-                    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                    [0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-                ],
-                "maxHealth": 3,
-            },
-        ]
         return jsonify(res)
 
     return app
