@@ -1,29 +1,31 @@
-.PHONY: build-dev run-dev build-prod build-prod-back build-prod-front run-prod dev
+.PHONY: run build build-front build-back push push-front push-back deploy deploy-front deploy-back
 
-
-all: dev
-
-dev: build-dev run-dev
-prod: build-prod run-prod
-
-# Alias for dev
-run: run-dev
-build: build-dev
 
 # Atomic receipes
-build-dev:
-	docker-compose -f "docker-compose.yml" build 
 
-run-dev:
+run:
 	docker-compose -f "docker-compose.yml" up -d --build
 
-build-prod: build-prod-front build-prod-back
+build: build-front build-back
 	
-build-prod-front:
-	docker build ./front/ -f ./front/prod.Dockerfile -t front --no-cache
+build-front:
+	docker build ./front/ -f ./front/prod.Dockerfile -t gcr.io/nomadic-mesh-272815/nonogram/front
 
-build-prod-back:	
-	docker build ./back/ -f ./back/prod.Dockerfile -t back --no-cache
-	
-run-prod:
-	docker-compose -f "docker-compose-prod.yml" up
+build-back:
+	docker build ./back/ -f ./back/prod.Dockerfile -t gcr.io/nomadic-mesh-272815/nonogram/back
+
+push: push-front push-back
+
+push-front:
+	docker push gcr.io/nomadic-mesh-272815/nonogram/front:latest
+
+push-back:
+	docker push gcr.io/nomadic-mesh-272815/nonogram/back:latest
+
+deploy: deploy-front deploy-back
+
+deploy-front:
+	kubectl apply -f deploy/manifests/front-deployments.yaml
+
+deploy-back:
+	kubectl apply -f deploy/manifests/back-deployments.yaml
