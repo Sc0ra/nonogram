@@ -1,0 +1,27 @@
+version: "3"
+services:
+  front:
+    image: front:latest
+    environment:
+      - HOST=0.0.0.0
+    ports:
+      - 80:80
+    depends_on:
+      - back
+
+  back:
+    image: back:latest
+    environment:
+      - FLASK_APP=app.py
+      - HOST=0.0.0.0
+    ports:
+      - 5000:5000
+    volumes:
+      - ./back/instance:/etc/config
+
+  mongo:
+    image: mongo
+    volumes:
+      - ./mongo-volume:/data/db
+    ports:
+      - 27017:27017

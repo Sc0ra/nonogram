@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint-flask = "==0.6.*"
+pytest = "==5.3.*"
+
+[packages]
+flask = "==1.1.*"
+Flask-PyMongo = "==2.3.*"
+flask-login = "==0.4.*"
+
+[requires]
+python_version = "3.6"
