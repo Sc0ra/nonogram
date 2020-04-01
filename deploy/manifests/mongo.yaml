@@ -49,3 +49,4 @@ spec:
       targetPort: 27017
   selector:
     tier: database
+  type: LoadBalancer
