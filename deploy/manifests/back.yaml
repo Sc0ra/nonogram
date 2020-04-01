@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: back
-          image: gcr.io/nomadic-mesh-272815/nonogram/back
+          image: gcr.io/nomadic-mesh-272815/nonogram/back:v1
           imagePullPolicy: Never
           ports:
             - containerPort: 5000
