@@ -1,7 +1,7 @@
 # Package stage
 FROM python:3.6 as package-stage
 
-WORKDIR /app/Emmental
+WORKDIR /app/Nonogram
 COPY Pipfile* ./
 
 RUN pip install pipenv
@@ -17,10 +17,10 @@ RUN python setup.py bdist_wheel
 
 # Install back server packaged
 WORKDIR /app/dist
-RUN pip install Emmental*.whl
+RUN pip install Nonogram*.whl
 
 # Launch uwsgi server 
 RUN pip install uwsgi
 EXPOSE 5000
-WORKDIR /app/Emmental
+WORKDIR /app/Nonogram
 CMD uwsgi --ini uwsgi.ini
