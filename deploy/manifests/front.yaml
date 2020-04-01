@@ -16,7 +16,6 @@ spec:
       containers:
         - name: front
           image: gcr.io/nomadic-mesh-272815/nonogram-front:v1
-          imagePullPolicy: Never
           ports:
             - containerPort: 80
 ---
