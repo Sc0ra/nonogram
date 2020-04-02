@@ -9,8 +9,6 @@ module.exports = {
     'plugin:vue/recommended',
     '@vue/airbnb',
     '@vue/typescript/recommended',
-    'plugin:vue/essential',
-    '@vue/typescript',
   ],
 
   rules: {

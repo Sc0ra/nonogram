@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import ModelCreator from '../views/ModelCreator.vue';
 import Level from '../views/Level.vue';
 import Home from '../views/Home.vue';
 
@@ -11,6 +12,11 @@ const routes = [
     name: 'Level',
     component: Level,
     props: true,
+  },
+  {
+    path: '/model-creator',
+    name: 'ModelCreator',
+    component: ModelCreator,
   },
   {
     path: '/',
