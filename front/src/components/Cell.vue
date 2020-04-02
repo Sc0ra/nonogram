@@ -1,7 +1,7 @@
 <template>
   <td
-    class="cell"
     :class="style"
+    class="cell"
   />
 </template>
 

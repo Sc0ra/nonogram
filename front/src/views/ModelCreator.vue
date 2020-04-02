@@ -72,34 +72,37 @@ export default class ImagePixelator extends Vue {
 
   public colors = 5;
 
-  public source = null;
+  public source = '';
 
-  public onChange(image) {
+  public onChange(image: string) {
     if (image) {
       this.source = image;
-      this.draw();
+      this.draw(image);
     }
   }
 
   @Watch('size')
   public onSizeChange() {
     if (this.source) {
-      this.draw();
+      this.draw(this.source);
     }
   }
 
   @Watch('colors')
   public onColorChange() {
     if (this.source) {
-      this.draw();
+      this.draw(this.source);
     }
   }
 
-  public draw() {
+  public draw(imageSource: string) {
     const canvas = this.$refs.canvas as HTMLCanvasElement;
     const context = canvas.getContext('2d');
+    if (!context) {
+      return;
+    }
     const img = new Image();
-    img.src = this.source;
+    img.src = imageSource;
     context.imageSmoothingEnabled = false;
     let { height, width } = img;
     img.onload = () => {
@@ -117,14 +120,15 @@ export default class ImagePixelator extends Vue {
         this.size / 2 - height / 2, width, height);
       const imgData = context.getImageData(0, 0, this.size, this.size);
       context.clearRect(0, 0, 400, 400);
+      const accumulator: number[][] = [];
       const pixelArray = imgData.data.reduce((acc, cur, curIndex) => {
         if (curIndex % 4 === 0) {
-          acc.push([Math.floor((cur + 1) / 16) * (256 / 16)]);
+          acc.push([cur]);
         } else if (curIndex % 4 === 1 || curIndex % 4 === 2) {
-          acc[acc.length - 1].push(Math.floor((cur + 1) / 16) * (256 / 16));
+          acc[acc.length - 1].push(cur);
         }
         return acc;
-      }, []);
+      }, accumulator);
       const colorMap = quantize(pixelArray, this.colors);
       const pixelArrayQuant = pixelArray.map((val) => colorMap.map(val));
       const clampedArrayQuant = new Uint8ClampedArray(pixelArrayQuant

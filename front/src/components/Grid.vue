@@ -1,10 +1,10 @@
 <template>
   <div>
     <table
-      class="board"
       @mouseup.left="isEditing = false"
       @mouseleave="isEditing = false; hoveredCell = {x: undefined, y: undefined};"
       @contextmenu.prevent=""
+      class="board"
     >
       <tbody>
         <tr>
@@ -17,8 +17,8 @@
             <div
               v-for="(hint, k) in columnHints[j-1]"
               :key="k"
-              class="hint"
               :class="{'success-hint': successColumn(j-1)}"
+              class="hint"
             >
               {{ hint }}
             </div>
@@ -32,8 +32,8 @@
             <span
               v-for="(hint, k) in rowHints[i]"
               :key="k"
-              class="hint"
               :class="{'success-hint': successLine(i)}"
+              class="hint"
             >
               {{ hint }}
             </span>

@@ -6,8 +6,8 @@
       class="icon is-large"
     >
       <i
-        class="fa-heart is-error fa-2x"
         :class="error <= currentHealth ? 'far' : 'fas'"
+        class="fa-heart is-error fa-2x"
       />
     </span>
   </div>
