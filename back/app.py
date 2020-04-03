@@ -3,6 +3,7 @@ import json
 import traceback
 
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 # from flask.logging import create_logger
 from flask_login import LoginManager, current_user
@@ -18,6 +19,7 @@ from core.exceptions import ApiException
 def create_app(testing=False):
     # create and configure the app
     app = Flask(__name__)
+    CORS(app)
 
     # Load conf depending on the mode
     if testing:

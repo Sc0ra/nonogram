@@ -13,6 +13,7 @@ Flask-PyMongo = "==2.3.*"
 flask-login = "==0.4.*"
 zappa = "*"
 dnspython = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.6"
