@@ -20,7 +20,6 @@ def create_app(testing=False):
     # create and configure the app
     app = Flask(__name__)
     CORS(app)
-
     # Load conf depending on the mode
     if testing:
         app.config.from_pyfile("./instance/test.conf.py")
