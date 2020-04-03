@@ -19,7 +19,15 @@ from core.exceptions import ApiException
 def create_app(testing=False):
     # create and configure the app
     app = Flask(__name__)
-    CORS(app)
+    CORS(
+        app,
+        resources={
+            r"/*": {
+                "origins": ["http://nonogram-front.s3-website.eu-west-3.amazonaws.com"]
+            }
+        },
+        supports_credentials=True,
+    )
     # Load conf depending on the mode
     if testing:
         app.config.from_pyfile("./instance/test.conf.py")
