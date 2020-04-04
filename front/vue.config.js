@@ -5,7 +5,7 @@ module.exports = {
       awsProfile: 'default',
       overrideEndpoint: false,
       region: 'eu-west-3',
-      bucket: 'nonogram-front',
+      bucket: 'nonogram',
       createBucket: true,
       staticHosting: true,
       staticIndexPage: 'index.html',

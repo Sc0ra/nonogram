@@ -19,25 +19,17 @@ from core.exceptions import ApiException
 def create_app(testing=False):
     # create and configure the app
     app = Flask(__name__)
-    CORS(
-        app,
-        resources={
-            r"/*": {
-                "origins": ["http://nonogram-front.s3-website.eu-west-3.amazonaws.com"]
-            }
-        },
-        supports_credentials=True,
-    )
-    # Load conf depending on the mode
-    if testing:
-        app.config.from_pyfile("./instance/test.conf.py")
-    elif app.env == "development":
-        app.config.from_pyfile("./instance/back.conf.py")
-    elif app.env == "production":
+
+    if app.env == "production":
         app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
         app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+        app.config["ORIGINS"] = os.environ.get("ORIGINS").split(",")
     else:
-        raise ValueError("App mode unknow: not in dev|prod|test")
+        app.config.from_pyfile("conf.py")
+
+    CORS(
+        app, origins=app.config["ORIGINS"], supports_credentials=True,
+    )
 
     app.mongo = PyMongo(app)
 
