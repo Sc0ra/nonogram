@@ -20,6 +20,7 @@ module.exports = {
     'import/no-named-as-default': 0,
     'import/no-unresolved': 0,
     'import/extensions': 0,
+    'linebreak-style': 0,
   },
 
   parserOptions: {

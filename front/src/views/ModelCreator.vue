@@ -87,19 +87,23 @@
 
 <script lang="ts">
 import { Watch, Component, Vue } from 'vue-property-decorator';
-import PictureInput from 'vue-picture-input';
 import VueCropper from 'vue-cropperjs';
+import Cropper from 'cropperjs';
 import RgbQuant from 'rgbquant';
 import 'cropperjs/dist/cropper.css';
 
 @Component({
   name: 'ImagePixelator',
   components: {
-    PictureInput,
     VueCropper,
   },
 })
 export default class ImagePixelator extends Vue {
+  $refs!: Vue['$refs'] & {
+    cropper: Cropper;
+    canvas: HTMLCanvasElement;
+  }
+
   public canvasSize = 400;
 
   public size = 20;
@@ -116,20 +120,17 @@ export default class ImagePixelator extends Vue {
     return this.$refs.canvas as HTMLCanvasElement;
   }
 
-  get context() {
-    return this.canvas && this.canvas.getContext('2d');
-  }
-
-  public setBaseImage(e) {
-    const file = e.target.files[0];
-    if (file.type.indexOf('image/') === -1) {
+  public setBaseImage(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    if (file && file.type.indexOf('image/') === -1) {
       return;
     }
     if (typeof FileReader === 'function') {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        this.baseImageSource = event.target.result;
-        this.$refs.cropper.replace(event.target.result);
+      reader.onload = () => {
+        this.baseImageSource = reader.result as string;
+        this.$refs.cropper.replace(this.baseImageSource);
       };
       reader.readAsDataURL(file);
     }
@@ -158,43 +159,44 @@ export default class ImagePixelator extends Vue {
   }
 
   public draw() {
-    const canvas = this.$refs.canvas as HTMLCanvasElement;
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, 400, 400);
-    context.imageSmoothingEnabled = false;
-    const q = new RgbQuant({
-      colors: this.colors,
-    });
-    q.sample(this.image);
-    const out = q.reduce(this.image);
-    const clampedArray = new Uint8ClampedArray(out);
-    const imageData = new ImageData(clampedArray, this.image.width, this.image.height);
-    createImageBitmap(imageData).then((image) => {
-      let { height, width } = image;
-      if (width > this.size) {
-        const ratio = this.size / width;
-        width *= ratio;
-        height *= ratio;
-      }
-      if (height > this.size) {
-        const ratio = this.size / height;
-        width *= ratio;
-        height *= ratio;
-      }
-      context.drawImage(image, this.size / 2 - width / 2,
-        this.size / 2 - height / 2, width, height);
-      const imageData2 = new ImageData(
-        context.getImageData(0, 0, this.size, this.size).data,
-        this.size,
-        this.size,
-      );
+    const context = this.canvas && this.canvas.getContext('2d');
+    if (context) {
       context.clearRect(0, 0, 400, 400);
-      createImageBitmap(imageData2).then((image2) => {
-        this.context.drawImage(
-          image2, 0, 0, this.size, this.size, 0, 0, this.canvas.width, this.canvas.height,
-        );
+      context.imageSmoothingEnabled = false;
+      const q = new RgbQuant({
+        colors: this.colors,
       });
-    });
+      q.sample(this.image);
+      const out = q.reduce(this.image);
+      const clampedArray = new Uint8ClampedArray(out);
+      const imageData = new ImageData(clampedArray, this.image.width, this.image.height);
+      createImageBitmap(imageData).then((image) => {
+        let { height, width } = image;
+        if (width > this.size) {
+          const ratio = this.size / width;
+          width *= ratio;
+          height *= ratio;
+        }
+        if (height > this.size) {
+          const ratio = this.size / height;
+          width *= ratio;
+          height *= ratio;
+        }
+        context.drawImage(image, this.size / 2 - width / 2,
+          this.size / 2 - height / 2, width, height);
+        const imageData2 = new ImageData(
+          context.getImageData(0, 0, this.size, this.size).data,
+          this.size,
+          this.size,
+        );
+        context.clearRect(0, 0, 400, 400);
+        createImageBitmap(imageData2).then((image2) => {
+          context.drawImage(
+            image2, 0, 0, this.size, this.size, 0, 0, this.canvas.width, this.canvas.height,
+          );
+        });
+      });
+    }
   }
 }
 </script>

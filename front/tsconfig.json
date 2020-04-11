@@ -25,5 +25,5 @@
     "tests/**/*.tsx"
   ],
   "exclude": ["node_modules"],
-  "files": ["./typedefs/quantize.d.ts"]
+  "files": ["./typedefs/vue-cropperjs.d.ts", "./typedefs/rgbquant.d.ts"]
 }
