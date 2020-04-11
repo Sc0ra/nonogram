@@ -62,7 +62,7 @@ import {
 
 import Cell from '@/components/Cell.vue';
 
-import { CellValue } from '@/store/types';
+import { CellValue } from '../store/types';
 
 @Component({
   components: {
@@ -223,16 +223,13 @@ export default class Grid extends Vue {
 <style scoped lang="scss">
 .board {
   border-collapse: collapse;
-  margin-right: 14rem;
 }
 
 .line-hint {
-  width: 14rem;
   text-align: right;
   padding-right: 1rem;
 }
 .column-hint {
-  height: 14rem;
   vertical-align: bottom;
   padding-bottom: 1rem;
   text-align: center;
