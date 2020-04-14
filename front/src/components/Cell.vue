@@ -1,6 +1,7 @@
 <template>
   <td
-    :class="style"
+    :class="classes"
+    :style="customColor"
     class="cell"
   />
 </template>
@@ -11,12 +12,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { CellValue } from '@/store/types';
 
 @Component
-export default class Grid extends Vue {
+export default class Cell extends Vue {
   @Prop({
-    required: true,
+    required: false,
     type: Number,
+    default: CellValue.Empty,
   })
-  value!: CellValue;
+  value: CellValue;
 
   @Prop({
     required: true,
@@ -30,7 +32,13 @@ export default class Grid extends Vue {
   })
   fatBorders!: string[];
 
-  get style() {
+  @Prop({
+    required: false,
+    type: Object,
+  })
+  color: { red: number; green: number; blue: number};
+
+  get classes() {
     return {
       'is-fill': this.value === CellValue.Fill,
       'is-flag': this.value === CellValue.Flag,
@@ -41,6 +49,14 @@ export default class Grid extends Vue {
       top: this.fatBorders.includes('top'),
       bottom: this.fatBorders.includes('bottom'),
     };
+  }
+
+  get customColor() {
+    return this.color
+      ? {
+        'background-color': `rgb(${this.color.red}, ${this.color.green}, ${this.color.blue})`,
+      }
+      : '';
   }
 }
 </script>

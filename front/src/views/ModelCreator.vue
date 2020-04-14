@@ -75,10 +75,9 @@
             </div>
           </div>
         </form>
-        <canvas
-          ref="canvas"
-          width="400"
-          height="400"
+        <creation-grid
+          v-if="model"
+          :model="model"
         />
       </div>
     </div>
@@ -92,10 +91,19 @@ import Cropper from 'cropperjs';
 import RgbQuant from 'rgbquant';
 import 'cropperjs/dist/cropper.css';
 
+import CreationGrid from '@/components/CreationGrid.vue';
+
+interface Color {
+  red: number;
+  green: number;
+  blue: number;
+}
+
 @Component({
   name: 'ImagePixelator',
   components: {
     VueCropper,
+    CreationGrid,
   },
 })
 export default class ImagePixelator extends Vue {
@@ -106,6 +114,8 @@ export default class ImagePixelator extends Vue {
 
   public canvasSize = 400;
 
+  public model: Color[][] | null = null;
+
   public size = 20;
 
   public colors = 5;
@@ -115,10 +125,6 @@ export default class ImagePixelator extends Vue {
   public image: HTMLImageElement = new Image();
 
   public palette: Uint8Array[][] = [];
-
-  get canvas() {
-    return this.$refs.canvas as HTMLCanvasElement;
-  }
 
   public setBaseImage(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -159,7 +165,8 @@ export default class ImagePixelator extends Vue {
   }
 
   public draw() {
-    const context = this.canvas && this.canvas.getContext('2d');
+    const canvas = new OffscreenCanvas(this.size, this.size);
+    const context = canvas && canvas.getContext('2d');
     if (context) {
       context.clearRect(0, 0, 400, 400);
       context.imageSmoothingEnabled = false;
@@ -184,17 +191,17 @@ export default class ImagePixelator extends Vue {
         }
         context.drawImage(image, this.size / 2 - width / 2,
           this.size / 2 - height / 2, width, height);
-        const imageData2 = new ImageData(
-          context.getImageData(0, 0, this.size, this.size).data,
-          this.size,
-          this.size,
-        );
-        context.clearRect(0, 0, 400, 400);
-        createImageBitmap(imageData2).then((image2) => {
-          context.drawImage(
-            image2, 0, 0, this.size, this.size, 0, 0, this.canvas.width, this.canvas.height,
-          );
-        });
+        const flatModel = context.getImageData(0, 0, this.size, this.size).data;
+        this.model = [...Array(this.size)].map((_, i) => [...Array(this.size)].map((_2, j) => {
+          const baseIndex = (i * this.size + j) * 4;
+          return flatModel[baseIndex + 3] === 255
+            ? {
+              red: flatModel[baseIndex],
+              green: flatModel[baseIndex + 1],
+              blue: flatModel[baseIndex + 2],
+            }
+            : { red: 255, green: 255, blue: 255 };
+        }));
       });
     }
   }
@@ -215,13 +222,6 @@ export default class ImagePixelator extends Vue {
   height: 400px;
   margin-top: 2rem;
   margin-bottom: 2rem;
-}
-canvas {
-  margin-top: 2rem;
-  border: 2px solid #76bdb9;
-  padding: 5px;
-  border-radius: 5px;
-  background-color: white;
 }
 .left-column-content {
   max-width: 400px;
