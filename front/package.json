@@ -16,6 +16,7 @@
     "bulma": "^0.8.0",
     "core-js": "^3.6.4",
     "cropperjs": "^1.5.6",
+    "lodash": "^4.17.15",
     "node-sass": "4.13.0",
     "quantize": "^1.0.2",
     "rgbquant": "^1.1.2",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.1.0",
+    "@types/lodash": "^4.14.149",
     "@types/mocha": "^5.2.4",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",

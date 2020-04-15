@@ -68,7 +68,8 @@
             <label class="label">Number of colors</label>
             <div class="control">
               <input
-                v-model.number="colors"
+                :value="colors"
+                @input="onColorsInput"
                 class="input"
                 type="number"
               >
@@ -90,6 +91,8 @@ import VueCropper from 'vue-cropperjs';
 import Cropper from 'cropperjs';
 import RgbQuant from 'rgbquant';
 import 'cropperjs/dist/cropper.css';
+
+import debounce from 'lodash/debounce';
 
 import CreationGrid from '@/components/CreationGrid.vue';
 
@@ -122,9 +125,13 @@ export default class ImagePixelator extends Vue {
 
   public baseImageSource = '';
 
-  public image: HTMLImageElement = new Image();
+  image: HTMLImageElement = new Image();
 
   public palette: Uint8Array[][] = [];
+
+  public onColorsInput = debounce(({ target }: {target: HTMLInputElement }) => {
+    this.colors = +target.value;
+  }, 500);
 
   public setBaseImage(event: Event) {
     const target = event.target as HTMLInputElement;

@@ -31,8 +31,6 @@ import {
 
 import Cell from '@/components/Cell.vue';
 
-import { CellValue } from '../store/types';
-
 interface Color {
   red: number;
   green: number;
@@ -65,10 +63,6 @@ export default class CreationGrid extends Vue {
   // Model infos
 
   public hoveredCell: {x?: number; y?: number} = {};
-
-  // State and init
-
-  private state: CellValue[][] = [];
 
   // Additional styling
 

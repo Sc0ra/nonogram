@@ -18,7 +18,7 @@ export default class Cell extends Vue {
     type: Number,
     default: CellValue.Empty,
   })
-  value: CellValue;
+  value?: CellValue;
 
   @Prop({
     required: true,
@@ -36,7 +36,7 @@ export default class Cell extends Vue {
     required: false,
     type: Object,
   })
-  color: { red: number; green: number; blue: number};
+  color?: { red: number; green: number; blue: number};
 
   get classes() {
     return {
