@@ -39,43 +39,53 @@
               drag-mode="move"
               alt="Source Image"
             />
+            <div
+              v-if="!baseImageSource"
+              class="placeholder"
+            >
+              Crop your model there
+            </div>
           </div>
           <div>
             <button
               @click="cropImage"
-              v-if="baseImageSource"
+              :disabled="!baseImageSource"
               class="button"
             >
               Crop
             </button>
           </div>
+          <form class="form">
+            <div class="field">
+              <label class="label">Grid size</label>
+              <div class="control slider-control">
+                <vue-slider
+                  v-model="size"
+                  :min="5"
+                  :max="30"
+                  :interval="5"
+                  tooltip="always"
+                  tooltip-placement="bottom"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Number of colors</label>
+              <div class="control slider-control">
+                <vue-slider
+                  v-model="colors"
+                  :min="2"
+                  :max="10"
+                  tooltip="always"
+                  tooltip-placement="bottom"
+                />
+              </div>
+            </div>
+          </form>
         </div>
       </div>
       <div class="column">
-        <form class="form">
-          <div class="field">
-            <label class="label">Grid size</label>
-            <div class="control">
-              <input
-                v-model.number="size"
-                class="input"
-                type="number"
-              >
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label">Number of colors</label>
-            <div class="control">
-              <input
-                :value="colors"
-                @input="onColorsInput"
-                class="input"
-                type="number"
-              >
-            </div>
-          </div>
-        </form>
         <creation-grid
           v-if="model"
           :model="model"
@@ -91,15 +101,16 @@ import VueCropper from 'vue-cropperjs';
 import Cropper from 'cropperjs';
 import RgbQuant from 'rgbquant';
 import 'cropperjs/dist/cropper.css';
+import VueSlider from 'vue-slider-component';
 
 import debounce from 'lodash/debounce';
 
 import CreationGrid from '@/components/CreationGrid.vue';
 
 interface Color {
-  red: number;
-  green: number;
-  blue: number;
+  red?: number;
+  green?: number;
+  blue?: number;
 }
 
 @Component({
@@ -107,6 +118,7 @@ interface Color {
   components: {
     VueCropper,
     CreationGrid,
+    VueSlider,
   },
 })
 export default class ImagePixelator extends Vue {
@@ -125,13 +137,9 @@ export default class ImagePixelator extends Vue {
 
   public baseImageSource = '';
 
-  image: HTMLImageElement = new Image();
+  public image: HTMLImageElement = new Image();
 
-  public palette: Uint8Array[][] = [];
-
-  public onColorsInput = debounce(({ target }: {target: HTMLInputElement }) => {
-    this.colors = +target.value;
-  }, 500);
+  public palette: Color[] | null = null;
 
   public setBaseImage(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -158,58 +166,74 @@ export default class ImagePixelator extends Vue {
   }
 
   @Watch('size')
-  public onSizeChange() {
-    if (this.image) {
-      this.draw();
-    }
-  }
+  public onSizeChange = debounce(() => {
+    this.draw();
+  }, 1000);
 
   @Watch('colors')
-  public onColorsChange() {
-    if (this.image) {
-      this.draw();
-    }
-  }
+  public onColorsChange = debounce(() => {
+    this.draw();
+  }, 1000);
 
   public draw() {
-    const canvas = new OffscreenCanvas(this.size, this.size);
-    const context = canvas && canvas.getContext('2d');
-    if (context) {
-      context.clearRect(0, 0, 400, 400);
-      context.imageSmoothingEnabled = false;
-      const q = new RgbQuant({
-        colors: this.colors,
-      });
-      q.sample(this.image);
-      const out = q.reduce(this.image);
-      const clampedArray = new Uint8ClampedArray(out);
-      const imageData = new ImageData(clampedArray, this.image.width, this.image.height);
-      createImageBitmap(imageData).then((image) => {
-        let { height, width } = image;
-        if (width > this.size) {
-          const ratio = this.size / width;
-          width *= ratio;
-          height *= ratio;
-        }
-        if (height > this.size) {
-          const ratio = this.size / height;
-          width *= ratio;
-          height *= ratio;
-        }
-        context.drawImage(image, this.size / 2 - width / 2,
-          this.size / 2 - height / 2, width, height);
-        const flatModel = context.getImageData(0, 0, this.size, this.size).data;
-        this.model = [...Array(this.size)].map((_, i) => [...Array(this.size)].map((_2, j) => {
-          const baseIndex = (i * this.size + j) * 4;
-          return flatModel[baseIndex + 3] === 255
-            ? {
-              red: flatModel[baseIndex],
-              green: flatModel[baseIndex + 1],
-              blue: flatModel[baseIndex + 2],
-            }
-            : { red: 255, green: 255, blue: 255 };
-        }));
-      });
+    if (this.image.src) {
+      const canvas = new OffscreenCanvas(this.size, this.size);
+      const context = canvas && canvas.getContext('2d');
+      if (context) {
+        context.clearRect(0, 0, 400, 400);
+        context.imageSmoothingEnabled = false;
+        const q = new RgbQuant({
+          colors: this.colors,
+        });
+        q.sample(this.image);
+        const palette: Color[] = [];
+        Array.from(q.palette() as Uint8Array).reduce((acc, val, index) => {
+          switch (index % 4) {
+            case 0:
+              acc.push({ red: val });
+              break;
+            case 1:
+              acc[acc.length - 1].green = val;
+              break;
+            case 2:
+              acc[acc.length - 1].blue = val;
+              break;
+            default:
+              break;
+          }
+          return acc;
+        }, palette);
+        this.palette = palette;
+        const out = q.reduce(this.image);
+        const clampedArray = new Uint8ClampedArray(out);
+        const imageData = new ImageData(clampedArray, this.image.width, this.image.height);
+        createImageBitmap(imageData).then((image) => {
+          let { height, width } = image;
+          if (width > this.size) {
+            const ratio = this.size / width;
+            width *= ratio;
+            height *= ratio;
+          }
+          if (height > this.size) {
+            const ratio = this.size / height;
+            width *= ratio;
+            height *= ratio;
+          }
+          context.drawImage(image, this.size / 2 - width / 2,
+            this.size / 2 - height / 2, width, height);
+          const flatModel = context.getImageData(0, 0, this.size, this.size).data;
+          this.model = [...Array(this.size)].map((_, i) => [...Array(this.size)].map((_2, j) => {
+            const baseIndex = (i * this.size + j) * 4;
+            return flatModel[baseIndex + 3] === 255
+              ? {
+                red: flatModel[baseIndex],
+                green: flatModel[baseIndex + 1],
+                blue: flatModel[baseIndex + 2],
+              }
+              : { red: 255, green: 255, blue: 255 };
+          }));
+        });
+      }
     }
   }
 }
@@ -219,6 +243,7 @@ export default class ImagePixelator extends Vue {
 .form {
   max-width: 20rem;
   margin: auto;
+  margin-top: 2rem;
 }
 .columns {
   margin-top: 2rem;
@@ -230,8 +255,23 @@ export default class ImagePixelator extends Vue {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: whitesmoke;
+  width: 400px;
+  height: 400px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
 .left-column-content {
   max-width: 400px;
   margin: auto;
+}
+.slider-control {
+  margin-bottom: 3rem;
 }
 </style>

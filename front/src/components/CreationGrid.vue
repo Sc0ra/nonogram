@@ -90,6 +90,7 @@ export default class CreationGrid extends Vue {
 <style scoped lang="scss">
 .board {
   border-collapse: collapse;
+  margin: auto;
 }
 
 .line-hint {

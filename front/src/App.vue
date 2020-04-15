@@ -24,6 +24,13 @@ public created() {
 <style lang="scss">
 @import 'bulma';
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap');
+
+$themeColor: #db6c84;
+$tooltipBgColor: #2b7a78;
+
+/* import theme style */
+@import '~vue-slider-component/lib/theme/antd.scss';
+
 html {
   background-color: #82d1cd;
 }

@@ -1,9 +1,7 @@
 .PHONY: run deploy build-front deploy-front deploy-back
 
-# Atomic receipes
-
 run:
-	docker-compose -f "docker-compose.yml" up -d --build
+	docker-compose -f "docker-compose.yml" up -d --build && cd front && npm run serve
 
 deploy: build-front deploy-front deploy-back
 
