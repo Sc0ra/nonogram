@@ -44,15 +44,15 @@ export default class App extends Vue {
   levelId!: string;
 
   @Getter('getLevel', { namespace: 'levels' })
-  public getLevel!: (levelId: string) => Level;
+  getLevel!: (levelId: string) => Level;
 
   get level() {
     return this.getLevel(this.levelId);
   }
 
-  public currentHealth = 0;
+  currentHealth = 0;
 
-  public success = false;
+  success = false;
 }
 </script>
 

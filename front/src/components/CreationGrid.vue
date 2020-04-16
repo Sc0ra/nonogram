@@ -49,7 +49,7 @@ export default class CreationGrid extends Vue {
   })
   model!: Color[][];
 
-  public state: Color[][] = [];
+  state: Color[][] = [];
 
   @Watch('model', {
     immediate: true,
@@ -62,15 +62,15 @@ export default class CreationGrid extends Vue {
   }
   // Model infos
 
-  public hoveredCell: {x?: number; y?: number} = {};
+  hoveredCell: {x?: number; y?: number} = {};
 
   // Additional styling
 
-  public onEnter(row: number, column: number) {
+  onEnter(row: number, column: number) {
     this.hoveredCell = { x: row, y: column };
   }
 
-  public fatBorders = (row: number, column: number) => {
+  fatBorders = (row: number, column: number) => {
     const borders: string[] = [];
     if (row % 5 === 0) {
       borders.push('top');

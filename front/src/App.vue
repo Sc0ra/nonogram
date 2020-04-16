@@ -12,12 +12,12 @@ import { LevelMap } from './store/types';
 
 @Component
 export default class App extends Vue {
-@Action('getLevels', { namespace: 'levels' })
-public getLevels!: () => LevelMap;
+  @Action('getLevels', { namespace: 'levels' })
+  getLevels!: () => LevelMap;
 
-public created() {
-  this.getLevels();
-}
+  created() {
+    this.getLevels();
+  }
 }
 </script>
 

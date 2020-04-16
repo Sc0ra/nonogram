@@ -35,8 +35,8 @@ import { Level } from '../store/levels/types';
 
 @Component
 export default class App extends Vue {
-@Getter('getLevels', { namespace: 'levels' })
-public levels!: Level[];
+  @Getter('getLevels', { namespace: 'levels' })
+  levels!: Level[];
 }
 </script>
 

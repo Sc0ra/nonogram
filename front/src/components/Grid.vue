@@ -86,11 +86,11 @@ export default class Grid extends Vue {
     return this.model && this.model[0].length;
   }
 
-  public hoveredCell: {x?: number; y?: number} = {};
+  hoveredCell: {x?: number; y?: number} = {};
 
   // Hints generation
 
-  public rowToHints = (line: number[]) => {
+  rowToHints = (line: number[]) => {
     let accumulator: number[] = [];
     let count = 0;
     accumulator = line.reduce((acc, curr) => {
@@ -120,9 +120,9 @@ export default class Grid extends Vue {
 
   // State and init
 
-  private state: CellValue[][] = [];
+  state: CellValue[][] = [];
 
-  public created() {
+  created() {
     this.state = Array(this.heigth)
       .fill(CellValue.Empty).map(() => Array(this.width)
         .fill(CellValue.Empty).map(() => CellValue.Empty));
@@ -130,15 +130,15 @@ export default class Grid extends Vue {
 
   // Play actions
 
-  private isEditing = false;
+  isEditing = false;
 
-  public updateCell(row: number, column: number, value: CellValue) {
+  updateCell(row: number, column: number, value: CellValue) {
     const newRow = this.state[row];
     newRow[column] = value;
     this.state.splice(row, 1, newRow);
   }
 
-  public selectCell(row: number, column: number) {
+  selectCell(row: number, column: number) {
     if (this.model[row][column] === CellValue.Fill) {
       this.updateCell(row, column, CellValue.Fill);
     } else if (this.state[row][column] === CellValue.Empty) {
@@ -148,7 +148,7 @@ export default class Grid extends Vue {
     }
   }
 
-  public onRightClick(row: number, column: number) {
+  onRightClick(row: number, column: number) {
     const cell = this.state[row][column];
     if (cell === CellValue.Empty) {
       this.updateCell(row, column, CellValue.Flag);
@@ -157,12 +157,12 @@ export default class Grid extends Vue {
     }
   }
 
-  public onLeftClick(row: number, column: number) {
+  onLeftClick(row: number, column: number) {
     this.isEditing = true;
     this.selectCell(row, column);
   }
 
-  public onNewCellEnter(row: number, column: number) {
+  onNewCellEnter(row: number, column: number) {
     if (this.isEditing) {
       this.selectCell(row, column);
     }
@@ -170,16 +170,16 @@ export default class Grid extends Vue {
 
   // Success
 
-  private successCell(row: number, column: number, cell: CellValue) {
+  successCell(row: number, column: number, cell: CellValue) {
     return this.model[row][column] !== CellValue.Fill || cell === this.model[row][column];
   }
 
-  public successColumn(column: number) {
+  successColumn(column: number) {
     return this.state
       .every((row, i) => this.successCell(i, column, row[column]));
   }
 
-  public successLine(row: number) {
+  successLine(row: number) {
     return this.state[row]
       .every((cell, j) => this.successCell(row, j, cell));
   }
@@ -190,7 +190,7 @@ export default class Grid extends Vue {
   }
 
   @Watch('success')
-  public onSuccess(value: boolean) {
+  onSuccess(value: boolean) {
     if (value) {
       this.isEditing = false;
       this.$emit('success');
@@ -199,11 +199,11 @@ export default class Grid extends Vue {
 
   // Additional styling
 
-  public onEnter(row: number, column: number) {
+  onEnter(row: number, column: number) {
     this.hoveredCell = { x: row, y: column };
   }
 
-  public fatBorders = (row: number, column: number) => {
+  fatBorders = (row: number, column: number) => {
     const borders: string[] = [];
     if (row % 5 === 0) {
       borders.push('top');
