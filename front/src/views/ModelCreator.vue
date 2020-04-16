@@ -85,13 +85,19 @@
           </form>
         </div>
       </div>
-      <div class="column">
+      <div
+        v-if="model"
+        class="column"
+      >
         <creation-grid
-          v-if="model"
           :model="model"
         />
       </div>
     </div>
+    <canvas
+      ref="canvas"
+      class="invisible-canvas"
+    />
   </div>
 </template>
 
@@ -127,21 +133,21 @@ export default class ImagePixelator extends Vue {
     canvas: HTMLCanvasElement;
   }
 
-  public canvasSize = 400;
+  canvasSize = 400;
 
-  public model: Color[][] | null = null;
+  model: Color[][] | null = null;
 
-  public size = 20;
+  size = 20;
 
-  public colors = 5;
+  colors = 5;
 
-  public baseImageSource = '';
+  baseImageSource = '';
 
-  public image: HTMLImageElement = new Image();
+  image: HTMLImageElement = new Image();
 
-  public palette: Color[] | null = null;
+  palette: Color[] | null = null;
 
-  public setBaseImage(event: Event) {
+  setBaseImage(event: Event) {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
     if (file && file.type.indexOf('image/') === -1) {
@@ -157,7 +163,7 @@ export default class ImagePixelator extends Vue {
     }
   }
 
-  public cropImage() {
+  cropImage() {
     this.image = new Image();
     this.image.onload = () => {
       this.draw();
@@ -166,73 +172,86 @@ export default class ImagePixelator extends Vue {
   }
 
   @Watch('size')
-  public onSizeChange = debounce(() => {
+  onSizeChange = debounce(() => {
     this.draw();
   }, 1000);
 
   @Watch('colors')
-  public onColorsChange = debounce(() => {
+  onColorsChange = debounce(() => {
     this.draw();
   }, 1000);
 
-  public draw() {
+  createPalette(rgbQuantPalette: Uint8Array) {
+    const palette: Color[] = [];
+    Array.from(rgbQuantPalette).reduce((acc, val, index) => {
+      switch (index % 4) {
+        case 0:
+          acc.push({ red: val });
+          break;
+        case 1:
+          acc[acc.length - 1].green = val;
+          break;
+        case 2:
+          acc[acc.length - 1].blue = val;
+          break;
+        default:
+          break;
+      }
+      return acc;
+    }, palette);
+    this.palette = palette;
+  }
+
+  createModel(flatModel: Uint8ClampedArray) {
+    this.model = [...Array(this.size)].map((_, i) => [...Array(this.size)].map((_2, j) => {
+      const baseIndex = (i * this.size + j) * 4;
+      return flatModel[baseIndex + 3] === 255
+        ? {
+          red: flatModel[baseIndex],
+          green: flatModel[baseIndex + 1],
+          blue: flatModel[baseIndex + 2],
+        }
+        : { red: 255, green: 255, blue: 255 };
+    }));
+  }
+
+  async draw() {
     if (this.image.src) {
-      const canvas = new OffscreenCanvas(this.size, this.size);
+      // Init context
+      const { canvas } = this.$refs;
       const context = canvas && canvas.getContext('2d');
       if (context) {
+        // Clear and init quantizer
         context.clearRect(0, 0, 400, 400);
         context.imageSmoothingEnabled = false;
         const q = new RgbQuant({
           colors: this.colors,
+          dithDelta: 0.25,
         });
+        // Color quantization
         q.sample(this.image);
-        const palette: Color[] = [];
-        Array.from(q.palette() as Uint8Array).reduce((acc, val, index) => {
-          switch (index % 4) {
-            case 0:
-              acc.push({ red: val });
-              break;
-            case 1:
-              acc[acc.length - 1].green = val;
-              break;
-            case 2:
-              acc[acc.length - 1].blue = val;
-              break;
-            default:
-              break;
-          }
-          return acc;
-        }, palette);
-        this.palette = palette;
+        this.createPalette(q.palette());
         const out = q.reduce(this.image);
+        // Image resizing and centering
         const clampedArray = new Uint8ClampedArray(out);
         const imageData = new ImageData(clampedArray, this.image.width, this.image.height);
-        createImageBitmap(imageData).then((image) => {
-          let { height, width } = image;
-          if (width > this.size) {
-            const ratio = this.size / width;
-            width *= ratio;
-            height *= ratio;
-          }
-          if (height > this.size) {
-            const ratio = this.size / height;
-            width *= ratio;
-            height *= ratio;
-          }
-          context.drawImage(image, this.size / 2 - width / 2,
-            this.size / 2 - height / 2, width, height);
-          const flatModel = context.getImageData(0, 0, this.size, this.size).data;
-          this.model = [...Array(this.size)].map((_, i) => [...Array(this.size)].map((_2, j) => {
-            const baseIndex = (i * this.size + j) * 4;
-            return flatModel[baseIndex + 3] === 255
-              ? {
-                red: flatModel[baseIndex],
-                green: flatModel[baseIndex + 1],
-                blue: flatModel[baseIndex + 2],
-              }
-              : { red: 255, green: 255, blue: 255 };
-          }));
-        });
+        const image = await createImageBitmap(imageData);
+        let { height, width } = image;
+        if (width > this.size) {
+          const ratio = this.size / width;
+          width *= ratio;
+          height *= ratio;
+        }
+        if (height > this.size) {
+          const ratio = this.size / height;
+          width *= ratio;
+          height *= ratio;
+        }
+        context.drawImage(image, this.size / 2 - width / 2,
+          this.size / 2 - height / 2, width, height);
+        // Model genenration
+        const flatModel = context.getImageData(0, 0, this.size, this.size).data;
+        this.createModel(flatModel);
       }
     }
   }
@@ -273,5 +292,10 @@ export default class ImagePixelator extends Vue {
 }
 .slider-control {
   margin-bottom: 3rem;
+}
+.invisible-canvas {
+  opacity: 0;
+  position: fixed;
+  bottom: -1000px;
 }
 </style>
